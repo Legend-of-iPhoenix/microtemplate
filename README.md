@@ -15,7 +15,7 @@ microtemplate = "1.0.0"
 ```
 
 Usage example (from the tests):
-```rs
+```rust
 use microtemplate::{Substitutions, render};
 
 // This derive allows microtemplate to use the struct as substitutions.
