@@ -1,0 +1,22 @@
+[package]
+name = "microtemplate"
+description = "Fast, microscopic helper crate for runtime text substitution."
+repository = "https://github.com/Legend-of-iPhoenix/microtemplate"
+version = "1.0.0"
+edition = "2018"
+license = "MIT OR Apache-2.0"
+keywords = ["template"]
+categories = ["template-engine"]
+readme = "README.md"
+
+authors = ["_iPhoenix_ <theiphoenixconspiracy@gmail.com>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+microtemplate_derive = { path = "./microtemplate_derive", version = "1.0.0" }
+
+[workspace]
+members = [
+    "microtemplate_derive",
+]

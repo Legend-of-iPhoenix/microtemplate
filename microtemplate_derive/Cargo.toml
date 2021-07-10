@@ -1,0 +1,17 @@
+[package]
+name = "microtemplate_derive"
+description = "Contains derive macros for the microtemplate crate."
+version = "1.0.0"
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+authors = ["_iPhoenix_ <theiphoenixconspiracy@gmail.com>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
