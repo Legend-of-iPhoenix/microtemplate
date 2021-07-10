@@ -2,7 +2,7 @@
 name = "microtemplate"
 description = "Fast, microscopic helper crate for runtime text substitution."
 repository = "https://github.com/Legend-of-iPhoenix/microtemplate"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2018"
 license = "MIT OR Apache-2.0"
 keywords = ["template"]

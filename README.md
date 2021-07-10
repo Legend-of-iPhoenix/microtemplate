@@ -11,7 +11,7 @@ A fast, microscopic helper crate for runtime text substitution.
 Add `microtemplate` to your dependencies:
 ```toml
 [dependencies]
-microtemplate = "1.0.0"
+microtemplate = "1.0.1"
 ```
 
 Usage example (from the tests):
