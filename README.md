@@ -1,8 +1,8 @@
 # microtemplate
-A fast, microscopic helper crate for runtime text substitution.
+A fast, microscopic helper crate for runtime string interpolation.
 
 ## Design Goals
- - **Very lightweight**: I want `microtemplate` to do exactly one thing. There's no reason to include more feature-rich/large libraries like `regex`/`handlebars`/`tinytemplate` if all you need is text substitution.
+ - **Very lightweight**: I want `microtemplate` to do exactly one thing. There's no reason to include more feature-rich/large libraries like `regex`/`handlebars`/`tinytemplate` if all you need is string interpolation.
  - - **Zero extra runtime sub-dependencies**: The only dependencies used are for the derive macro, which is handled at compile time.
  - **Fast**: I'm interested in making this library as fast as I can make it. It's extremely fast right now, but I do not believe it is perfect.
  - **Simple**.
