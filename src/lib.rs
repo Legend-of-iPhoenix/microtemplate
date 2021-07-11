@@ -7,7 +7,7 @@ pub trait Context {
 }
 
 #[inline(always)] // need 4 speed
-fn resolve_substitution<'a, C: Context>(iter: &mut Chars, context: &'a C) -> &'a str {
+fn resolve_substitution<'ctx, C: Context>(iter: &mut Chars, context: &'ctx C) -> &'ctx str {
     let mut field_name = String::with_capacity(4); // reasonable lower bound
     while let Some(c) = iter.next() {
         match c {
@@ -16,7 +16,7 @@ fn resolve_substitution<'a, C: Context>(iter: &mut Chars, context: &'a C) -> &'a
         }
     }
 
-    ""
+    "" // iter ran out- replace with the empty string
 }
 
 pub fn render<C: Context>(input: &str, context: C) -> String {
