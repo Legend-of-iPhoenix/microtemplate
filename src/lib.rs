@@ -17,7 +17,7 @@ pub fn render<T: Context>(string: &str, context: T) -> String {
             for (y_index, y) in &mut iter {
                 if y == b'}' {
                     let field_str = context.get_field(unsafe {
-                        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+                        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(x_index+1..y_index))
                     });
                     new_string.push_str(field_str);
                     x_index = y_index + 1;
