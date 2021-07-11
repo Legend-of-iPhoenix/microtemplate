@@ -1,5 +1,3 @@
-use std::str::Chars;
-
 pub use microtemplate_derive::Substitutions;
 
 pub trait Context {
@@ -13,13 +11,13 @@ pub fn render<T: Context>(string: &str, context: T) -> String {
     while let Some((mut x_index, x)) = iter.next() {
         if x == b'{' {
             new_string.push_str(unsafe {
-                str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+                std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
             });
 
             for (y_index, y) in &mut iter {
                 if y == b'}' {
                     let field_str = context.get_field(unsafe {
-                        str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+                        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
                     });
                     new_string.push_str(field_str);
                     x_index = y_index + 1;
@@ -30,7 +28,7 @@ pub fn render<T: Context>(string: &str, context: T) -> String {
         }
     }
     new_string.push_str(unsafe {
-        str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..string.len()))
+        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..string.len()))
     });
     new_string
-} 
+}
