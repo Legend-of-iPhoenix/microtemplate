@@ -6,35 +6,31 @@ pub trait Context {
     fn get_field(&self, field_name: &str) -> &str;
 }
 
-#[inline(always)] // need 4 speed
-fn resolve_substitution<'a, C: Context>(iter: &mut Chars, context: &'a C) -> &'a str {
-    let mut field_name = String::with_capacity(4); // reasonable lower bound
-    while let Some(c) = iter.next() {
-        match c {
-            '}' => return context.get_field(&field_name),
-            _ => field_name.push(c),
-        }
-    }
+pub fn render<T: Context>(string: &str, context: T) -> String {
+    let mut new_string = String::with_capacity(string.len());
+    let mut last_index = 0;
+    let mut iter = string.as_bytes().iter().copied().enumerate();
+    while let Some((mut x_index, x)) = iter.next() {
+        if x == b'{' {
+            new_string.push_str(unsafe {
+                str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+            });
 
-    ""
-}
-
-pub fn render<C: Context>(input: &str, context: C) -> String {
-    let first = input.find('{'); // handle the case where there's no substitution
-    if let Some(first) = first {
-        let mut output = String::from(&input[0..first]);
-        output.reserve(input.len() - first);
-
-        let mut iter = input[first..].chars();
-        while let Some(c) = iter.next() {
-            match c {
-                '{' => output.push_str(resolve_substitution(&mut iter, &context)),
-                _ => output.push(c),
+            for (y_index, y) in &mut iter {
+                if y == b'}' {
+                    let field_str = context.get_field(unsafe {
+                        str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+                    });
+                    new_string.push_str(field_str);
+                    x_index = y_index + 1;
+                    break;
+                }
             }
+            last_index = x_index;
         }
-
-        output
-    } else {
-        input.to_string() // not sure if I like this.
     }
-}
+    new_string.push_str(unsafe {
+        str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..string.len()))
+    });
+    new_string
+} 
