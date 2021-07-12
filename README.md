@@ -11,7 +11,7 @@ A fast, microscopic helper crate for runtime string interpolation.
 Add `microtemplate` to your dependencies:
 ```toml
 [dependencies]
-microtemplate = "1.0.2"
+microtemplate = "1.0.3"
 ```
 
 Usage example (from the tests):

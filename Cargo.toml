@@ -2,7 +2,7 @@
 name = "microtemplate"
 description = "Fast, microscopic helper crate for runtime string interpolation."
 repository = "https://github.com/Legend-of-iPhoenix/microtemplate"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2018"
 license = "MIT OR Apache-2.0"
 keywords = ["template"]
