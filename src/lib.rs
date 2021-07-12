@@ -1,40 +1,42 @@
-use std::str::Chars;
-
 pub use microtemplate_derive::Substitutions;
 
 pub trait Context {
     fn get_field(&self, field_name: &str) -> &str;
 }
 
-#[inline(always)] // need 4 speed
-fn resolve_substitution<'ctx, C: Context>(iter: &mut Chars, context: &'ctx C) -> &'ctx str {
-    let mut field_name = String::with_capacity(4); // reasonable lower bound
-    while let Some(c) = iter.next() {
-        match c {
-            '}' => return context.get_field(&field_name),
-            _ => field_name.push(c),
-        }
-    }
-
-    "" // iter ran out- replace with the empty string
-}
-
 pub fn render<C: Context>(input: &str, context: C) -> String {
-    let first = input.find('{'); // handle the case where there's no substitution
-    if let Some(first) = first {
-        let mut output = String::from(&input[0..first]);
-        output.reserve(input.len() - first);
+    let mut output = String::with_capacity(input.len());
 
-        let mut iter = input[first..].chars();
-        while let Some(c) = iter.next() {
-            match c {
-                '{' => output.push_str(resolve_substitution(&mut iter, &context)),
-                _ => output.push(c),
+    let input_bytes = input.as_bytes();
+    let mut iter = input_bytes.iter().copied().enumerate();
+    let mut last_index = 0;
+
+    while let Some((index, c)) = iter.next() {
+        if c == b'{' {
+            output.push_str(unsafe {
+                std::str::from_utf8_unchecked(input_bytes.get_unchecked(last_index..index))
+            });
+
+            while let Some((substitution_index, c)) = iter.next() {
+                if c == b'}' {
+                    let field_name = unsafe {
+                        // +1 skips the opening {
+                        std::str::from_utf8_unchecked(input_bytes.get_unchecked(index+1..substitution_index))
+                    };
+
+                    output.push_str(context.get_field(field_name));
+
+                    // +1 skips the closing }
+                    last_index = substitution_index + 1;
+                    break;
+                }
             }
         }
-
-        output
-    } else {
-        input.to_string() // not sure if I like this.
     }
+
+    output.push_str(unsafe {
+        std::str::from_utf8_unchecked(input_bytes.get_unchecked(last_index..input.len()))
+    });
+
+    output
 }
