@@ -4,31 +4,39 @@ pub trait Context {
     fn get_field(&self, field_name: &str) -> &str;
 }
 
-pub fn render<T: Context>(string: &str, context: T) -> String {
-    let mut new_string = String::with_capacity(string.len());
+pub fn render<C: Context>(input: &str, context: C) -> String {
+    let mut output = String::with_capacity(input.len());
+
+    let input_bytes = input.as_bytes();
+    let mut iter = input_bytes.iter().copied().enumerate();
     let mut last_index = 0;
-    let mut iter = string.as_bytes().iter().copied().enumerate();
-    while let Some((mut x_index, x)) = iter.next() {
-        if x == b'{' {
-            new_string.push_str(unsafe {
-                std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..x_index))
+
+    while let Some((index, c)) = iter.next() {
+        if c == b'{' {
+            output.push_str(unsafe {
+                std::str::from_utf8_unchecked(input_bytes.get_unchecked(last_index..index))
             });
 
-            for (y_index, y) in &mut iter {
-                if y == b'}' {
-                    let field_str = context.get_field(unsafe {
-                        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(x_index+1..y_index))
-                    });
-                    new_string.push_str(field_str);
-                    x_index = y_index + 1;
+            while let Some((substitution_index, c)) = iter.next() {
+                if c == b'}' {
+                    let field_name = unsafe {
+                        // +1 skips the opening {
+                        std::str::from_utf8_unchecked(input_bytes.get_unchecked(index+1..substitution_index))
+                    };
+
+                    output.push_str(context.get_field(field_name));
+
+                    // +1 skips the closing }
+                    last_index = substitution_index + 1;
                     break;
                 }
             }
-            last_index = x_index;
         }
     }
-    new_string.push_str(unsafe {
-        std::str::from_utf8_unchecked(string.as_bytes().get_unchecked(last_index..string.len()))
+
+    output.push_str(unsafe {
+        std::str::from_utf8_unchecked(input_bytes.get_unchecked(last_index..input.len()))
     });
-    new_string
+
+    output
 }
