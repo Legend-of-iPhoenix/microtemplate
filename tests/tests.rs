@@ -43,3 +43,10 @@ fn many_substitutions_found() {
 
     assert_eq!(rendered, "The Birds, a 1963 thriller by director Alfred Hitchcock, is about a swarm of birds that suddenly and violently attack the residents of a California coastal town.");
 }
+
+#[test]
+fn substitution_at_end() {
+    let rendered = microtemplate::render("Today's movie is {name}", THE_BIRDS);
+
+    assert_eq!(rendered, "Today's movie is The Birds");
+}
