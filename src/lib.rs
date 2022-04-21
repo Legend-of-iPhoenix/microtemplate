@@ -1,10 +1,20 @@
 pub use microtemplate_derive::Substitutions;
 
+#[cfg(feature = "actix-web")]
+use actix_web::{dev::Path, dev::Url};
+
 pub trait Context {
     fn get_field(&self, field_name: &str) -> &str;
 }
 
-pub fn render<C: Context>(input: &str, context: C) -> String {
+#[cfg(feature = "actix-web")]
+impl Context for Path<Url> {
+    fn get_field(&self, field_name: &str) -> &str {
+        self.get(field_name).unwrap()
+    }
+}
+
+pub fn render<C: Context>(input: &str, context: &C) -> String {
     let mut output = String::with_capacity(input.len());
 
     let input_bytes = input.as_bytes();
