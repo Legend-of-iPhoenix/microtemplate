@@ -2,8 +2,8 @@
 name = "microtemplate"
 description = "Fast, microscopic helper crate for runtime string interpolation."
 repository = "https://github.com/Legend-of-iPhoenix/microtemplate"
-version = "1.0.3"
-edition = "2018"
+version = "1.0.4"
+edition = "2021"
 license = "MIT OR Apache-2.0"
 keywords = ["template"]
 categories = ["template-engine"]
@@ -15,6 +15,10 @@ authors = ["_iPhoenix_ <theiphoenixconspiracy@gmail.com>"]
 
 [dependencies]
 microtemplate_derive = { path = "./microtemplate_derive", version = "1.0.0" }
+actix-web = { version = "4", optional = true }
+
+[features]
+actix-web = ["dep:actix-web"]
 
 [workspace]
 members = [
